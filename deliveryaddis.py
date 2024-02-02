@@ -10,7 +10,8 @@ url = 'https://deliveraddis.com/books/eb-amharic-books'
 def fetch_content(url):
     response = requests.get(url)
     return response.text
-
+    
+# Function to scrape book data from the HTML code
 def scrape_data(html_code):
     soup = BeautifulSoup(html_code, "html.parser")
     books = []
@@ -22,9 +23,10 @@ def scrape_data(html_code):
         # Extracting Book Name
         name_tag = item.find("div", class_="product-name")
         name = name_tag.text.strip() if name_tag else "Name not found"
-        # Extracting Author and Category
+        # Extracting Author
         details = item.find_all("span", class_="properties")
         author = details[0].text.strip() if len(details) > 0 else "Author not found"
+          # Extracting Category
         category = details[1].text.strip() if len(details) > 1 else "Category not found"
         # Extracting Price
         price_tag = item.find("p", class_="price")
@@ -37,7 +39,8 @@ def scrape_data(html_code):
             "Price": price
         })
     return books
-
+    
+#Function to send a message to a Telegram channel
 def send_message_to_telegram(message):
     send_message_url = f"https://api.telegram.org/bot{telegram_bot_token}/sendMessage"
     data = {
@@ -48,7 +51,8 @@ def send_message_to_telegram(message):
     response = requests.post(send_message_url, data=data)
     if response.status_code != 200:
         print("Failed to send message to Telegram channel.")
-
+        
+# function that arranges the scraping and messaging process
 def main():
     html_code = fetch_content(url)
     books_data = scrape_data(html_code)
@@ -62,4 +66,4 @@ def main():
         time.sleep(8)
 
 if __name__ == "__main__":
-    main()
+    main()  # Calling the main function if the script is executed directly
